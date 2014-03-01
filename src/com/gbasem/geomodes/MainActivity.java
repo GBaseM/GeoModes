@@ -1,15 +1,22 @@
 package com.gbasem.geomodes;
 
+import com.gbasem.geomodes.GPSTracker;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
-
+	GPSTracker gps;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		gps = new GPSTracker(MainActivity.this);
+		double lat=gps.getLatitude();
+		double longi=gps.getLongitude();
+		//Code for Reverse geocoding
+		
 	}
 
 	@Override
