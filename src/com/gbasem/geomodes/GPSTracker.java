@@ -1,6 +1,12 @@
 package com.gbasem.geomodes;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
@@ -9,6 +15,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -162,11 +169,52 @@ public class GPSTracker extends Service implements LocationListener {
 		return this.canGetLocation;
 	}
 	
-	/**
-	 * Function to show settings alert dialog
-	 * On pressing Settings button will lauch Settings Options
-	 * */
 	
+
+	public JSONObject getLocationInfo( double lat, double lng) {
+		String url = "http://maps.google.com/maps/api/geocode/json?latlng=12.9707,80.2424&sensor=false";
+		InputStream is = null;
+		 JSONObject jObj = null;
+         String json = "";
+		try {
+            // defaultHttpClient
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(url);
+
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();           
+
+        } 
+		catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    is, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            json = sb.toString();
+        } catch (Exception e) {
+            Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+       // try parse the string to a JSON object
+        try {
+            jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+
+        // return JSON String
+        return jObj;
+
+    }
 	public void showSettingsAlert(){
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
    	 
@@ -215,46 +263,4 @@ public class GPSTracker extends Service implements LocationListener {
 	public IBinder onBind(Intent arg0) {
 		return null;
 	}
-	public JSONObject getLocationInfo( double lat, double lng) {
-
-	    HttpGet httpGet = new HttpGet("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lng+"&sensor=false");
-	    HttpClient client = new DefaultHttpClient();
-	    HttpResponse response;
-	    StringBuilder stringBuilder = new StringBuilder();
-	    
-	    try {
-	        response = client.execute(httpGet);
-	        HttpEntity entity = response.getEntity();
-	        InputStream stream = entity.getContent();
-	        int b;
-	        while ((b = stream.read()) != -1) {
-	            stringBuilder.append((char) b);
-	        }
-	    } catch (ClientProtocolException e) {
-	        } catch (Exception e) {
-	    }
-
-	    JSONObject jsonObject = new JSONObject();
-	    try {
-	        jsonObject = new JSONObject(stringBuilder.toString());
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	
-	    return jsonObject;
-	}
-
-public String jparser(double x,double y) 	
-{
-	JSONObject locationInfo = this.getLocationInfo(x,y);
-
-String userAddress=null;
-try {
-	userAddress= locationInfo.getJSONArray("results").getJSONObject(0).getString("formatted_address");
-} catch (JSONException e1) {
-	// TODO Auto-generated catch block
-	e1.printStackTrace();
-}
-return userAddress;
-}
 }

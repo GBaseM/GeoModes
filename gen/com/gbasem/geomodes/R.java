@@ -24,10 +24,24 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f080000;
+        public static final int List=0x7f080007;
+        public static final int a=0x7f080006;
+        public static final int action_settings=0x7f08000b;
+        public static final int btnAdd=0x7f080005;
+        public static final int frst_editTxt=0x7f080001;
+        public static final int frst_txtV=0x7f080000;
+        public static final int last_editTxt=0x7f080003;
+        public static final int lst_txtV=0x7f080002;
+        public static final int save_btn=0x7f080004;
+        public static final int txt_fName=0x7f080009;
+        public static final int txt_id=0x7f080008;
+        public static final int txt_lName=0x7f08000a;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
+        public static final int add_activity=0x7f030001;
+        public static final int display_activity=0x7f030002;
+        public static final int listcell=0x7f030003;
     }
     public static final class menu {
         public static final int main=0x7f070000;
