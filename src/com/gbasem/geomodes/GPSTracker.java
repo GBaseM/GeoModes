@@ -1,9 +1,16 @@
 package com.gbasem.geomodes;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
@@ -20,6 +27,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 public class GPSTracker extends Service implements LocationListener {
 
@@ -145,20 +153,7 @@ public class GPSTracker extends Service implements LocationListener {
 		// return longitude
 		return longitude;
 	}
-	public String getAddress(double x,double y)
-	{
-		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-		List<Address> addresses=null;
-		try{
-			 addresses = geocoder.getFromLocation(x, y, 1);	
-			
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		return addresses.get(0).toString();
-	}
+	
 	/**
 	 * Function to check GPS/wifi enabled
 	 * @return boolean
@@ -220,5 +215,46 @@ public class GPSTracker extends Service implements LocationListener {
 	public IBinder onBind(Intent arg0) {
 		return null;
 	}
+	public JSONObject getLocationInfo( double lat, double lng) {
 
+	    HttpGet httpGet = new HttpGet("http://maps.google.com/maps/api/geocode/json?latlng="+lat+","+lng+"&sensor=false");
+	    HttpClient client = new DefaultHttpClient();
+	    HttpResponse response;
+	    StringBuilder stringBuilder = new StringBuilder();
+	    
+	    try {
+	        response = client.execute(httpGet);
+	        HttpEntity entity = response.getEntity();
+	        InputStream stream = entity.getContent();
+	        int b;
+	        while ((b = stream.read()) != -1) {
+	            stringBuilder.append((char) b);
+	        }
+	    } catch (ClientProtocolException e) {
+	        } catch (Exception e) {
+	    }
+
+	    JSONObject jsonObject = new JSONObject();
+	    try {
+	        jsonObject = new JSONObject(stringBuilder.toString());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	
+	    return jsonObject;
+	}
+
+public String jparser(double x,double y) 	
+{
+	JSONObject locationInfo = this.getLocationInfo(x,y);
+
+String userAddress=null;
+try {
+	userAddress= locationInfo.getJSONArray("results").getJSONObject(0).getString("formatted_address");
+} catch (JSONException e1) {
+	// TODO Auto-generated catch block
+	e1.printStackTrace();
+}
+return userAddress;
+}
 }
