@@ -5,6 +5,7 @@ import com.gbasem.geomodes.GPSTracker;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	GPSTracker gps;
@@ -16,6 +17,8 @@ public class MainActivity extends Activity {
 		double lat=gps.getLatitude();
 		double longi=gps.getLongitude();
 		//Code for Reverse geocoding
+		String address=gps.getAddress(lat,longi);
+		Toast.makeText(this, address, Toast.LENGTH_LONG).show();
 		
 	}
 

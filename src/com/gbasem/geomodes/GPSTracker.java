@@ -3,6 +3,9 @@ package com.gbasem.geomodes;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.client.methods.HttpGet;
+import org.json.JSONObject;
+
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -142,7 +145,7 @@ public class GPSTracker extends Service implements LocationListener {
 		// return longitude
 		return longitude;
 	}
-	/*public List<Address> getAddress(double x,double y)
+	public String getAddress(double x,double y)
 	{
 		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 		List<Address> addresses=null;
@@ -154,8 +157,8 @@ public class GPSTracker extends Service implements LocationListener {
 		{
 			e.printStackTrace();
 		}
-		return addresses;
-	}*/
+		return addresses.get(0).toString();
+	}
 	/**
 	 * Function to check GPS/wifi enabled
 	 * @return boolean
@@ -168,6 +171,7 @@ public class GPSTracker extends Service implements LocationListener {
 	 * Function to show settings alert dialog
 	 * On pressing Settings button will lauch Settings Options
 	 * */
+	
 	public void showSettingsAlert(){
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
    	 
@@ -195,7 +199,7 @@ public class GPSTracker extends Service implements LocationListener {
         // Showing Alert Message
         alertDialog.show();
 	}
-
+	
 	@Override
 	public void onLocationChanged(Location location) {
 	}
